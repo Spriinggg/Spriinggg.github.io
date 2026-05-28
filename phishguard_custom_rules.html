@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:#f8fafc;display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:220px;background:#0f2744;display:flex;flex-direction:column;padding:0;flex-shrink:0;min-height:100vh;}
+  .sb-brand{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .sb-logo{display:flex;align-items:center;gap:10px;}
+  .sb-shield{width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .sb-name{font-family:'DM Serif Display',serif;font-size:16px;color:white;}
+  .sb-sub{font-size:10px;color:#475569;letter-spacing:0.8px;text-transform:uppercase;}
+  .sb-nav{padding:20px 12px;flex:1;}
+  .sb-section{font-size:10px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin-bottom:8px;margin-top:16px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px;}
+  .nav-item.active{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.2);}
+  .nav-icon{font-size:15px;width:20px;text-align:center;}
+  .nav-label{font-size:13px;color:#94a3b8;}
+  .nav-item.active .nav-label{color:white;font-weight:600;}
+  .sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+  .sb-user{display:flex;align-items:center;gap:10px;}
+  .sb-avatar{width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .sb-username{font-size:12px;color:#cbd5e1;font-weight:500;}
+  .sb-role{font-size:10px;color:#475569;}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;}
+  .topbar{background:white;border-bottom:1px solid #f1f5f9;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .topbar-left h1{font-family:'DM Serif Display',serif;font-size:20px;color:#0f172a;}
+  .topbar-left p{font-size:12px;color:#94a3b8;margin-top:2px;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .page-label{font-size:11px;color:#94a3b8;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;font-weight:600;}
+  .btn{padding:9px 16px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;}
+  .btn-primary{background:#0f2744;color:white;}
+  .btn-outline{background:white;color:#374151;border:1.5px solid #e2e8f0;}
+  .btn-danger{background:#fef2f2;color:#dc2626;border:1.5px solid #fecaca;}
+  .btn-success{background:#f0fdf4;color:#15803d;border:1.5px solid #bbf7d0;}
+
+  /* CONTENT */
+  .content{padding:24px 28px;flex:1;overflow-y:auto;}
+
+  /* SUMMARY */
+  .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .sum-card{background:white;border:1px solid #f1f5f9;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .sum-icon{font-size:22px;}
+  .sum-val{font-family:'DM Serif Display',serif;font-size:24px;color:#0f172a;}
+  .sum-label{font-size:11px;color:#94a3b8;margin-top:1px;}
+
+  /* ADD RULE FORM */
+  .add-form{background:white;border:1px solid #f1f5f9;border-radius:12px;padding:20px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .add-form-title{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .add-form-title span{font-size:16px;}
+  .add-form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+  .add-field{display:flex;flex-direction:column;gap:5px;}
+  .add-field.grow{flex:1;min-width:180px;}
+  .add-field label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.4px;}
+  .add-field input,.add-field select{padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:#0f172a;background:#fafafa;outline:none;}
+  .add-field input:focus{border-color:#3b82f6;background:white;}
+  .add-field input::placeholder{color:#cbd5e1;}
+  .type-select{display:flex;gap:8px;}
+  .type-opt{display:flex;align-items:center;gap:6px;padding:10px 16px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;}
+  .type-opt.whitelist.selected{border-color:#22c55e;background:#f0fdf4;color:#15803d;}
+  .type-opt.blacklist.selected{border-color:#ef4444;background:#fef2f2;color:#dc2626;}
+  .type-opt:not(.selected){color:#94a3b8;}
+
+  /* TABS */
+  .tabs{display:flex;gap:0;margin-bottom:14px;background:white;border:1px solid #f1f5f9;border-radius:10px;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,0.04);width:fit-content;}
+  .tab{padding:8px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:#94a3b8;transition:all 0.15s;}
+  .tab.active{background:#0f2744;color:white;}
+
+  /* TOOLBAR */
+  .toolbar{background:white;border:1px solid #f1f5f9;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .search-wrap{display:flex;align-items:center;gap:8px;flex:1;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;}
+  .search-wrap input{border:none;background:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:#0f172a;width:100%;}
+  .search-wrap input::placeholder{color:#cbd5e1;}
+  select.filter{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#374151;background:#f8fafc;outline:none;}
+
+  /* TABLE */
+  .table-wrap{background:white;border:1px solid #f1f5f9;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .table-head-bar{padding:14px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;justify-content:space-between;}
+  .table-title{font-size:13px;font-weight:600;color:#0f172a;}
+  .table-count{font-size:12px;color:#94a3b8;}
+  table{width:100%;border-collapse:collapse;}
+  thead{background:#f8fafc;}
+  thead th{padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f1f5f9;}
+  tbody tr{border-bottom:1px solid #f8fafc;transition:background 0.12s;}
+  tbody tr:hover{background:#fafbff;}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:12px 16px;font-size:12px;color:#374151;vertical-align:middle;}
+  .rule-id{font-family:monospace;font-size:11px;color:#94a3b8;}
+  .domain{font-family:monospace;font-size:12px;color:#0f172a;font-weight:600;}
+  .badge-rule{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-rule.whitelist{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+  .badge-rule.blacklist{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+  .active-toggle{display:flex;align-items:center;gap:6px;font-size:12px;}
+  .mini-dot{width:8px;height:8px;border-radius:50%;}
+  .mini-dot.on{background:#22c55e;}
+  .mini-dot.off{background:#e2e8f0;}
+  .ts{font-size:11px;color:#94a3b8;}
+  .added-by{font-size:11px;color:#64748b;background:#f8fafc;padding:2px 8px;border-radius:5px;}
+  .act-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;border:none;cursor:pointer;}
+  .act-edit{background:#eff6ff;color:#1d4ed8;}
+  .act-del{background:#fef2f2;color:#dc2626;}
+  .action-btns{display:flex;gap:6px;}
+
+  /* PAGINATION */
+  .pagination{padding:12px 20px;border-top:1px solid #f8fafc;display:flex;align-items:center;justify-content:space-between;}
+  .page-info{font-size:12px;color:#94a3b8;}
+  .page-btns{display:flex;gap:4px;}
+  .pg-btn{width:30px;height:30px;border-radius:7px;border:1px solid #e2e8f0;background:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#374151;}
+  .pg-btn.active{background:#0f2744;color:white;border-color:#0f2744;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-shield">🛡</div>
+      <div>
+        <div class="sb-name">PhishGuard</div>
+        <div class="sb-sub">NIDS System</div>
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Main</div>
+    <div class="nav-item"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
+    <div class="nav-item"><span class="nav-icon">📋</span><span class="nav-label">Threat Logs</span></div>
+    <div class="nav-item"><span class="nav-icon">🖥</span><span class="nav-label">Connected Devices</span></div>
+    <div class="sb-section">Admin</div>
+    <div class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">System Settings</span></div>
+    <div class="nav-item active"><span class="nav-icon">🛡</span><span class="nav-label">Custom Rules</span></div>
+    <div class="sb-section">Account</div>
+    <div class="nav-item"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">👤</div>
+      <div>
+        <div class="sb-username">hafizuddin_admin</div>
+        <div class="sb-role">Superadmin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Custom Rules</h1>
+      <p>Manually manage domain whitelist and blacklist entries</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-outline">⬇ Export Rules</button>
+      <div class="page-label">Page 6 / 6</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SUMMARY -->
+    <div class="summary-strip">
+      <div class="sum-card">
+        <span class="sum-icon">📋</span>
+        <div><div class="sum-val">18</div><div class="sum-label">Total Rules</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon">✅</span>
+        <div><div class="sum-val" style="color:#15803d;">7</div><div class="sum-label">Whitelist Entries</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon">🚫</span>
+        <div><div class="sum-val" style="color:#dc2626;">11</div><div class="sum-label">Blacklist Entries</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon">⚡</span>
+        <div><div class="sum-val">16</div><div class="sum-label">Active Rules</div></div>
+      </div>
+    </div>
+
+    <!-- ADD RULE FORM -->
+    <div class="add-form">
+      <div class="add-form-title"><span>➕</span> Add New Domain Rule</div>
+      <div class="add-form-row">
+        <div class="add-field grow">
+          <label>Domain / URL</label>
+          <input type="text" placeholder="e.g. google.com or http://suspicious-site.com"/>
+        </div>
+        <div class="add-field">
+          <label>Rule Type</label>
+          <div class="type-select">
+            <div class="type-opt whitelist selected">✅ Whitelist</div>
+            <div class="type-opt blacklist">🚫 Blacklist</div>
+          </div>
+        </div>
+        <div class="add-field grow">
+          <label>Notes (Optional)</label>
+          <input type="text" placeholder="e.g. False positive — verified safe domain"/>
+        </div>
+        <div class="add-field">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary">Add Rule</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS + TOOLBAR -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+      <div class="tabs">
+        <div class="tab active">All Rules (18)</div>
+        <div class="tab">Whitelist (7)</div>
+        <div class="tab">Blacklist (11)</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-danger">🗑 Clear All</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span style="color:#94a3b8;">🔍</span>
+        <input type="text" placeholder="Search by domain name or notes..."/>
+      </div>
+      <select class="filter">
+        <option>All Status</option>
+        <option>Active</option>
+        <option>Inactive</option>
+      </select>
+      <select class="filter">
+        <option>Sort: Newest First</option>
+        <option>Sort: Oldest First</option>
+        <option>Sort: A–Z</option>
+      </select>
+      <button class="btn btn-outline">Apply</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-head-bar">
+        <div class="table-title">Domain Rules</div>
+        <div class="table-count">Showing 7 of 18 rules</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Rule ID</th>
+            <th>Domain / URL</th>
+            <th>Rule Type</th>
+            <th>Status</th>
+            <th>Date Added</th>
+            <th>Added By</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rule-id">#001</span></td>
+            <td><span class="domain">google.com</span></td>
+            <td><span class="badge-rule whitelist">✅ Whitelist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">15 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">False positive — verified safe</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#002</span></td>
+            <td><span class="domain">free-gift-claim.xyz</span></td>
+            <td><span class="badge-rule blacklist">🚫 Blacklist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">20 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Confirmed phishing site</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#003</span></td>
+            <td><span class="domain">youtube.com</span></td>
+            <td><span class="badge-rule whitelist">✅ Whitelist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">15 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Safe — kids streaming</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#004</span></td>
+            <td><span class="domain">mybank-secure.tk</span></td>
+            <td><span class="badge-rule blacklist">🚫 Blacklist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">22 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Fake banking phishing page</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#005</span></td>
+            <td><span class="domain">update-wallet-now.com</span></td>
+            <td><span class="badge-rule blacklist">🚫 Blacklist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">24 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Crypto wallet phishing</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#006</span></td>
+            <td><span class="domain">netflix.com</span></td>
+            <td><span class="badge-rule whitelist">✅ Whitelist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot off"></div><span style="color:#94a3b8;">Inactive</span></div></td>
+            <td><span class="ts">16 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Streaming service</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><span class="rule-id">#007</span></td>
+            <td><span class="domain">win-iphone15-now.net</span></td>
+            <td><span class="badge-rule blacklist">🚫 Blacklist</span></td>
+            <td><div class="active-toggle"><div class="mini-dot on"></div><span>Active</span></div></td>
+            <td><span class="ts">27 May 2026</span></td>
+            <td><span class="added-by">hafizuddin_admin</span></td>
+            <td><span class="ts">Prize scam phishing page</span></td>
+            <td><div class="action-btns"><button class="act-btn act-edit">Edit</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <div class="page-info">Showing 1–7 of 18 rules</div>
+        <div class="page-btns">
+          <button class="pg-btn">←</button>
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">→</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
