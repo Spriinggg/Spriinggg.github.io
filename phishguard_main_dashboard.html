@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:#f8fafc;display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:220px;background:#0f2744;display:flex;flex-direction:column;padding:0;flex-shrink:0;min-height:100vh;}
+  .sb-brand{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .sb-logo{display:flex;align-items:center;gap:10px;}
+  .sb-shield{width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .sb-name{font-family:'DM Serif Display',serif;font-size:16px;color:white;}
+  .sb-sub{font-size:10px;color:#475569;letter-spacing:0.8px;text-transform:uppercase;}
+  .sb-nav{padding:20px 12px;flex:1;}
+  .sb-section{font-size:10px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin-bottom:8px;margin-top:16px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px;transition:all 0.15s;}
+  .nav-item:hover{background:rgba(255,255,255,0.05);}
+  .nav-item.active{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.2);}
+  .nav-icon{font-size:15px;width:20px;text-align:center;}
+  .nav-label{font-size:13px;color:#94a3b8;font-weight:400;}
+  .nav-item.active .nav-label{color:white;font-weight:600;}
+  .sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+  .sb-user{display:flex;align-items:center;gap:10px;}
+  .sb-avatar{width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .sb-username{font-size:12px;color:#cbd5e1;font-weight:500;}
+  .sb-role{font-size:10px;color:#475569;}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{background:white;border-bottom:1px solid #f1f5f9;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .topbar-left h1{font-family:'DM Serif Display',serif;font-size:20px;color:#0f172a;}
+  .topbar-left p{font-size:12px;color:#94a3b8;margin-top:2px;}
+  .topbar-right{display:flex;align-items:center;gap:12px;}
+  .api-badge{display:flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;padding:6px 12px;}
+  .api-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .api-text{font-size:12px;color:#15803d;font-weight:600;}
+  .date-chip{font-size:12px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:6px 12px;}
+  .page-label{font-size:11px;color:#94a3b8;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;font-weight:600;}
+
+  /* CONTENT */
+  .content{padding:24px 28px;flex:1;overflow-y:auto;}
+
+  /* STAT CARDS */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+  .stat-card{background:white;border-radius:12px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 4px rgba(0,0,0,0.04);position:relative;overflow:hidden;}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+  .stat-card.red::before{background:#ef4444;}
+  .stat-card.blue::before{background:#3b82f6;}
+  .stat-card.green::before{background:#22c55e;}
+  .stat-card.amber::before{background:#f59e0b;}
+  .stat-label{font-size:11px;color:#94a3b8;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+  .stat-value{font-family:'DM Serif Display',serif;font-size:30px;color:#0f172a;line-height:1;}
+  .stat-sub{font-size:11px;color:#64748b;margin-top:6px;}
+  .stat-icon{position:absolute;right:16px;top:16px;font-size:22px;opacity:0.15;}
+  .stat-change{display:inline-flex;align-items:center;gap:3px;font-size:11px;margin-top:8px;padding:2px 8px;border-radius:10px;}
+  .stat-change.up{background:#f0fdf4;color:#15803d;}
+  .stat-change.down{background:#fef2f2;color:#dc2626;}
+
+  /* CHARTS ROW */
+  .charts-row{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;margin-bottom:24px;}
+  .card{background:white;border-radius:12px;border:1px solid #f1f5f9;box-shadow:0 1px 4px rgba(0,0,0,0.04);}
+  .card-head{padding:18px 20px 12px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;justify-content:space-between;}
+  .card-title{font-size:13px;font-weight:600;color:#0f172a;}
+  .card-sub{font-size:11px;color:#94a3b8;margin-top:2px;}
+  .card-body{padding:18px 20px;}
+
+  /* Donut chart */
+  .donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;}
+  .donut-svg{flex-shrink:0;}
+  .donut-legend{display:flex;flex-direction:column;gap:10px;}
+  .leg-item{display:flex;align-items:center;gap:8px;}
+  .leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .leg-label{font-size:12px;color:#374151;}
+  .leg-val{font-size:12px;font-weight:600;color:#0f172a;margin-left:auto;padding-left:8px;}
+
+  /* Bar chart */
+  .bar-chart{display:flex;align-items:flex-end;gap:8px;height:130px;padding-top:10px;}
+  .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;}
+  .bar{width:100%;border-radius:4px 4px 0 0;transition:opacity 0.2s;}
+  .bar-col:hover .bar{opacity:0.75;}
+  .bar-label{font-size:10px;color:#94a3b8;white-space:nowrap;}
+  .bar-val{font-size:10px;color:#64748b;font-weight:600;}
+  .bar-axis{display:flex;align-items:flex-end;gap:8px;border-top:1px solid #f1f5f9;margin-top:4px;}
+
+  /* Recent threats table */
+  .threat-table{width:100%;}
+  .tt-head{display:grid;grid-template-columns:1fr 1.5fr 2fr 0.8fr;gap:8px;padding:8px 12px;background:#f8fafc;border-radius:8px;margin-bottom:4px;}
+  .tt-head span{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;}
+  .tt-row{display:grid;grid-template-columns:1fr 1.5fr 2fr 0.8fr;gap:8px;padding:10px 12px;border-radius:8px;align-items:center;transition:background 0.15s;}
+  .tt-row:hover{background:#f8fafc;}
+  .tt-row span{font-size:12px;color:#374151;}
+  .tt-row .ip{font-family:monospace;font-size:11px;color:#64748b;}
+  .tt-row .url{font-family:monospace;font-size:11px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+  .badge.blocked{background:#fef2f2;color:#dc2626;}
+  .badge.allowed{background:#f0fdf4;color:#15803d;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-shield">🛡</div>
+      <div>
+        <div class="sb-name">PhishGuard</div>
+        <div class="sb-sub">NIDS System</div>
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Main</div>
+    <div class="nav-item active"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
+    <div class="nav-item"><span class="nav-icon">📋</span><span class="nav-label">Threat Logs</span></div>
+    <div class="nav-item"><span class="nav-icon">🖥</span><span class="nav-label">Connected Devices</span></div>
+    <div class="sb-section">Admin</div>
+    <div class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">System Settings</span></div>
+    <div class="nav-item"><span class="nav-icon">🛡</span><span class="nav-label">Custom Rules</span></div>
+    <div class="sb-section">Account</div>
+    <div class="nav-item"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">👤</div>
+      <div>
+        <div class="sb-username">hafizuddin_admin</div>
+        <div class="sb-role">Superadmin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Overview Dashboard</h1>
+      <p>Real-time network security monitoring</p>
+    </div>
+    <div class="topbar-right">
+      <div class="api-badge"><div class="api-dot"></div><span class="api-text">PhishTank API Online</span></div>
+      <div class="date-chip">📅 28 May 2026</div>
+      <div class="page-label">Page 2 / 6</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card red">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-label">Threats Blocked</div>
+        <div class="stat-value">142</div>
+        <div class="stat-sub">Total since deployment</div>
+        <div class="stat-change up">↑ 12 today</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-label">URLs Inspected</div>
+        <div class="stat-value">3,847</div>
+        <div class="stat-sub">Total requests analysed</div>
+        <div class="stat-change up">↑ 284 today</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🖥</div>
+        <div class="stat-label">Active Devices</div>
+        <div class="stat-value">8</div>
+        <div class="stat-sub">Connected IoT endpoints</div>
+        <div class="stat-change up">All online</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-label">Detection Rate</div>
+        <div class="stat-value">98.6%</div>
+        <div class="stat-sub">Accuracy this month</div>
+        <div class="stat-change up">↑ 0.4%</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-row">
+      <!-- Donut -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Traffic Distribution</div>
+            <div class="card-sub">By detection outcome</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="110" height="110" viewBox="0 0 110 110">
+              <!-- Safe: 88% = 220deg, Phishing: 8% = 20deg, Suspicious: 4% = 10deg -->
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#f1f5f9" stroke-width="18"/>
+              <!-- Safe (green) 220deg -->
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#22c55e" stroke-width="18"
+                stroke-dasharray="209 239" stroke-dashoffset="60" stroke-linecap="butt"/>
+              <!-- Phishing (red) -->
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#ef4444" stroke-width="18"
+                stroke-dasharray="19 429" stroke-dashoffset="-149" stroke-linecap="butt"/>
+              <!-- Suspicious (amber) -->
+              <circle cx="55" cy="55" r="38" fill="none" stroke="#f59e0b" stroke-width="18"
+                stroke-dasharray="11 437" stroke-dashoffset="-168" stroke-linecap="butt"/>
+              <text x="55" y="51" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="#0f172a">96%</text>
+              <text x="55" y="63" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#94a3b8">Safe Traffic</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div><span class="leg-label">Safe</span><span class="leg-val">96%</span></div>
+              <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div><span class="leg-label">Phishing</span><span class="leg-val">3%</span></div>
+              <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div><span class="leg-label">Suspicious</span><span class="leg-val">1%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bar chart -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Threats Blocked — Last 7 Days</div>
+            <div class="card-sub">Daily phishing detection count</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart">
+            <div class="bar-col"><div class="bar-val">8</div><div class="bar" style="height:62px;background:#dbeafe;"></div><div class="bar-label">22 May</div></div>
+            <div class="bar-col"><div class="bar-val">14</div><div class="bar" style="height:108px;background:#93c5fd;"></div><div class="bar-label">23 May</div></div>
+            <div class="bar-col"><div class="bar-val">6</div><div class="bar" style="height:46px;background:#dbeafe;"></div><div class="bar-label">24 May</div></div>
+            <div class="bar-col"><div class="bar-val">18</div><div class="bar" style="height:130px;background:#3b82f6;"></div><div class="bar-label">25 May</div></div>
+            <div class="bar-col"><div class="bar-val">11</div><div class="bar" style="height:85px;background:#93c5fd;"></div><div class="bar-label">26 May</div></div>
+            <div class="bar-col"><div class="bar-val">9</div><div class="bar" style="height:69px;background:#dbeafe;"></div><div class="bar-label">27 May</div></div>
+            <div class="bar-col"><div class="bar-val">12</div><div class="bar" style="height:92px;background:#1d4ed8;"></div><div class="bar-label">Today</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT THREATS -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Recent Threat Activity</div>
+          <div class="card-sub">Latest 4 blocked phishing attempts</div>
+        </div>
+        <span style="font-size:12px;color:#3b82f6;cursor:pointer;">View all logs →</span>
+      </div>
+      <div class="card-body" style="padding-top:8px;">
+        <div class="threat-table">
+          <div class="tt-head">
+            <span>Timestamp</span>
+            <span>Device IP</span>
+            <span>Phishing URL</span>
+            <span>Action</span>
+          </div>
+          <div class="tt-row">
+            <span class="ip">09:15:43</span>
+            <span class="ip">192.168.1.10</span>
+            <span class="url">http://free-gift-claim.xyz/login</span>
+            <span><div class="badge blocked">Blocked</div></span>
+          </div>
+          <div class="tt-row">
+            <span class="ip">08:52:17</span>
+            <span class="ip">192.168.1.14</span>
+            <span class="url">http://mybank-secure.tk/verify</span>
+            <span><div class="badge blocked">Blocked</div></span>
+          </div>
+          <div class="tt-row">
+            <span class="ip">08:31:05</span>
+            <span class="ip">192.168.1.11</span>
+            <span class="url">http://192.168.99.1/phish?id=443</span>
+            <span><div class="badge blocked">Blocked</div></span>
+          </div>
+          <div class="tt-row">
+            <span class="ip">07:44:29</span>
+            <span class="ip">192.168.1.13</span>
+            <span class="url">http://update-wallet-now.com/action</span>
+            <span><div class="badge blocked">Blocked</div></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

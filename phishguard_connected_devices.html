@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:#f8fafc;display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:220px;background:#0f2744;display:flex;flex-direction:column;padding:0;flex-shrink:0;min-height:100vh;}
+  .sb-brand{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .sb-logo{display:flex;align-items:center;gap:10px;}
+  .sb-shield{width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .sb-name{font-family:'DM Serif Display',serif;font-size:16px;color:white;}
+  .sb-sub{font-size:10px;color:#475569;letter-spacing:0.8px;text-transform:uppercase;}
+  .sb-nav{padding:20px 12px;flex:1;}
+  .sb-section{font-size:10px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin-bottom:8px;margin-top:16px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px;}
+  .nav-item.active{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.2);}
+  .nav-icon{font-size:15px;width:20px;text-align:center;}
+  .nav-label{font-size:13px;color:#94a3b8;}
+  .nav-item.active .nav-label{color:white;font-weight:600;}
+  .sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+  .sb-user{display:flex;align-items:center;gap:10px;}
+  .sb-avatar{width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .sb-username{font-size:12px;color:#cbd5e1;font-weight:500;}
+  .sb-role{font-size:10px;color:#475569;}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;}
+  .topbar{background:white;border-bottom:1px solid #f1f5f9;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .topbar-left h1{font-family:'DM Serif Display',serif;font-size:20px;color:#0f172a;}
+  .topbar-left p{font-size:12px;color:#94a3b8;margin-top:2px;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .page-label{font-size:11px;color:#94a3b8;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;font-weight:600;}
+  .btn{padding:8px 16px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;}
+  .btn-primary{background:#0f2744;color:white;}
+  .btn-outline{background:white;color:#374151;border:1.5px solid #e2e8f0;}
+
+  /* CONTENT */
+  .content{padding:24px 28px;flex:1;overflow-y:auto;}
+
+  /* SUMMARY STRIP */
+  .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .sum-card{background:white;border:1px solid #f1f5f9;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .sum-icon{font-size:22px;}
+  .sum-val{font-family:'DM Serif Display',serif;font-size:24px;color:#0f172a;}
+  .sum-label{font-size:11px;color:#94a3b8;margin-top:1px;}
+
+  /* TOOLBAR */
+  .toolbar{background:white;border:1px solid #f1f5f9;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .search-wrap{display:flex;align-items:center;gap:8px;flex:1;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;}
+  .search-wrap input{border:none;background:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:#0f172a;width:100%;}
+  .search-wrap input::placeholder{color:#cbd5e1;}
+  select{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#374151;background:#f8fafc;outline:none;}
+
+  /* DEVICE GRID */
+  .device-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .device-card{background:white;border:1px solid #f1f5f9;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);display:flex;gap:16px;align-items:flex-start;transition:box-shadow 0.15s;}
+  .device-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+  .device-card.offline{opacity:0.65;}
+
+  /* Device icon bubble */
+  .dev-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+  .dev-icon-wrap.active{background:#eff6ff;}
+  .dev-icon-wrap.offline{background:#f8fafc;}
+
+  .dev-info{flex:1;min-width:0;}
+  .dev-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .dev-name{font-size:14px;font-weight:600;color:#0f172a;}
+  .status-pill{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+  .status-pill.active{background:#f0fdf4;color:#15803d;}
+  .status-pill.offline{background:#f8fafc;color:#94a3b8;}
+  .status-dot{width:6px;height:6px;border-radius:50%;}
+  .status-dot.active{background:#22c55e;animation:pulse 2s infinite;}
+  .status-dot.offline{background:#cbd5e1;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+  .dev-ip{font-family:monospace;font-size:11px;color:#1e3a5f;font-weight:600;background:#eff6ff;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:6px;}
+  .dev-mac{font-family:monospace;font-size:10px;color:#94a3b8;}
+
+  .dev-stats{display:flex;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid #f8fafc;}
+  .dev-stat{display:flex;flex-direction:column;gap:1px;}
+  .dev-stat-val{font-size:13px;font-weight:600;color:#0f172a;}
+  .dev-stat-label{font-size:10px;color:#94a3b8;}
+
+  .dev-actions{display:flex;gap:6px;margin-top:10px;}
+  .dev-btn{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;border:none;cursor:pointer;}
+  .dev-btn-view{background:#eff6ff;color:#1d4ed8;}
+  .dev-btn-edit{background:#f8fafc;color:#374151;border:1px solid #e2e8f0;}
+  .dev-btn-block{background:#fef2f2;color:#dc2626;}
+
+  /* Editable name input */
+  .name-edit{display:flex;align-items:center;gap:6px;}
+  .name-edit-icon{font-size:12px;color:#94a3b8;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-shield">🛡</div>
+      <div>
+        <div class="sb-name">PhishGuard</div>
+        <div class="sb-sub">NIDS System</div>
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Main</div>
+    <div class="nav-item"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
+    <div class="nav-item"><span class="nav-icon">📋</span><span class="nav-label">Threat Logs</span></div>
+    <div class="nav-item active"><span class="nav-icon">🖥</span><span class="nav-label">Connected Devices</span></div>
+    <div class="sb-section">Admin</div>
+    <div class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">System Settings</span></div>
+    <div class="nav-item"><span class="nav-icon">🛡</span><span class="nav-label">Custom Rules</span></div>
+    <div class="sb-section">Account</div>
+    <div class="nav-item"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">👤</div>
+      <div>
+        <div class="sb-username">hafizuddin_admin</div>
+        <div class="sb-role">Superadmin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Connected Devices</h1>
+      <p>All IoT endpoints detected on the SOHO network — Jasin, Melaka</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-outline">🔄 Refresh</button>
+      <button class="btn btn-primary">⬇ Export List</button>
+      <div class="page-label">Page 4 / 6</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SUMMARY -->
+    <div class="summary-strip">
+      <div class="sum-card">
+        <span class="sum-icon">🖥</span>
+        <div><div class="sum-val">8</div><div class="sum-label">Total Devices</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon" style="color:#22c55e;">●</span>
+        <div><div class="sum-val" style="color:#15803d;">7</div><div class="sum-label">Active</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon" style="color:#94a3b8;">●</span>
+        <div><div class="sum-val" style="color:#94a3b8;">1</div><div class="sum-label">Offline</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon">🚫</span>
+        <div><div class="sum-val" style="color:#dc2626;">142</div><div class="sum-label">Total Threats Blocked</div></div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span style="color:#94a3b8;">🔍</span>
+        <input type="text" placeholder="Search by device name or IP address..."/>
+      </div>
+      <select>
+        <option>All Status</option>
+        <option>Active</option>
+        <option>Offline</option>
+      </select>
+      <button class="btn btn-outline">Apply</button>
+    </div>
+
+    <!-- DEVICE GRID -->
+    <div class="device-grid">
+
+      <!-- Device 1: Smart TV -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">📺</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">Smart TV</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.10</div>
+          <div class="dev-mac">MAC: A4:C3:F0:12:34:56</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">1,024</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">38</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 09:15</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 2: iPad/Tablet -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">📱</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">iPad / Tablet</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.11</div>
+          <div class="dev-mac">MAC: B8:27:EB:45:67:89</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">876</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">21</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 08:44</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 3: Smartphone 1 -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">📲</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">Smartphone 1</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.12</div>
+          <div class="dev-mac">MAC: DC:A6:32:67:AB:CD</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">643</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">17</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 07:30</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 4: Smartphone 2 -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">📲</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">Smartphone 2</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.13</div>
+          <div class="dev-mac">MAC: E4:5F:01:23:BC:EF</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">512</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">14</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 09:02</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 5: Laptop 1 -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">💻</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">Laptop 1</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.14</div>
+          <div class="dev-mac">MAC: F0:18:98:34:DE:F0</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">398</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">22</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 08:55</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 6: Laptop 2 -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">💻</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">Laptop 2</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.15</div>
+          <div class="dev-mac">MAC: 3C:22:FB:56:01:23</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">287</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">9</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 07:11</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 7: PCs -->
+      <div class="device-card">
+        <div class="dev-icon-wrap active">🖥</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">PCs</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill active"><div class="status-dot active"></div>Active</div>
+          </div>
+          <div class="dev-ip">192.168.1.16</div>
+          <div class="dev-mac">MAC: 08:00:27:78:AB:CD</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">744</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">13</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">28 May 09:10</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device 8: CCTV/IoT Sensor -->
+      <div class="device-card offline">
+        <div class="dev-icon-wrap offline">📡</div>
+        <div class="dev-info">
+          <div class="dev-top">
+            <div class="name-edit"><div class="dev-name">CCTV / IoT Sensor</div><span class="name-edit-icon">✏️</span></div>
+            <div class="status-pill offline"><div class="status-dot offline"></div>Offline</div>
+          </div>
+          <div class="dev-ip" style="background:#f1f5f9;color:#64748b;">192.168.1.17</div>
+          <div class="dev-mac">MAC: 00:1A:2B:89:CD:EF</div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">363</div><div class="dev-stat-label">Total Requests</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#dc2626;">8</div><div class="dev-stat-label">Threats Blocked</div></div>
+            <div class="dev-stat"><div class="dev-stat-val" style="color:#94a3b8;">27 May 22:48</div><div class="dev-stat-label">Last Seen</div></div>
+          </div>
+          <div class="dev-actions">
+            <button class="dev-btn dev-btn-view">View Logs</button>
+            <button class="dev-btn dev-btn-edit">Edit Name</button>
+            <button class="dev-btn dev-btn-block">Block</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:#f8fafc;display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:220px;background:#0f2744;display:flex;flex-direction:column;padding:0;flex-shrink:0;min-height:100vh;}
+  .sb-brand{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .sb-logo{display:flex;align-items:center;gap:10px;}
+  .sb-shield{width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .sb-name{font-family:'DM Serif Display',serif;font-size:16px;color:white;}
+  .sb-sub{font-size:10px;color:#475569;letter-spacing:0.8px;text-transform:uppercase;}
+  .sb-nav{padding:20px 12px;flex:1;}
+  .sb-section{font-size:10px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin-bottom:8px;margin-top:16px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px;}
+  .nav-item.active{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.2);}
+  .nav-icon{font-size:15px;width:20px;text-align:center;}
+  .nav-label{font-size:13px;color:#94a3b8;}
+  .nav-item.active .nav-label{color:white;font-weight:600;}
+  .sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+  .sb-user{display:flex;align-items:center;gap:10px;}
+  .sb-avatar{width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .sb-username{font-size:12px;color:#cbd5e1;font-weight:500;}
+  .sb-role{font-size:10px;color:#475569;}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{background:white;border-bottom:1px solid #f1f5f9;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .topbar-left h1{font-family:'DM Serif Display',serif;font-size:20px;color:#0f172a;}
+  .topbar-left p{font-size:12px;color:#94a3b8;margin-top:2px;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .page-label{font-size:11px;color:#94a3b8;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;font-weight:600;}
+
+  /* CONTENT */
+  .content{padding:24px 28px;flex:1;overflow-y:auto;}
+
+  /* SUMMARY STRIP */
+  .summary-strip{display:flex;gap:12px;margin-bottom:20px;}
+  .sum-card{background:white;border:1px solid #f1f5f9;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .sum-icon{font-size:20px;}
+  .sum-val{font-family:'DM Serif Display',serif;font-size:22px;color:#0f172a;}
+  .sum-label{font-size:11px;color:#94a3b8;margin-top:1px;}
+  .sum-card.red .sum-val{color:#dc2626;}
+  .sum-card.blue .sum-val{color:#2563eb;}
+  .sum-card.amber .sum-val{color:#d97706;}
+
+  /* TOOLBAR */
+  .toolbar{background:white;border:1px solid #f1f5f9;border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .search-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:200px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 12px;}
+  .search-wrap input{border:none;background:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:#0f172a;width:100%;}
+  .search-wrap input::placeholder{color:#cbd5e1;}
+  .filter-group{display:flex;align-items:center;gap:8px;}
+  .filter-label{font-size:12px;color:#64748b;white-space:nowrap;}
+  select{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#374151;background:#f8fafc;outline:none;cursor:pointer;}
+  input[type=date]{border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#374151;background:#f8fafc;outline:none;}
+  .btn{padding:8px 16px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;white-space:nowrap;}
+  .btn-primary{background:#0f2744;color:white;}
+  .btn-outline{background:white;color:#374151;border:1.5px solid #e2e8f0;}
+  .btn-danger{background:#fef2f2;color:#dc2626;border:1.5px solid #fecaca;}
+
+  /* TABLE */
+  .table-wrap{background:white;border:1px solid #f1f5f9;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .table-header{padding:16px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;justify-content:space-between;}
+  .table-title{font-size:13px;font-weight:600;color:#0f172a;}
+  .table-count{font-size:12px;color:#94a3b8;}
+  table{width:100%;border-collapse:collapse;}
+  thead{background:#f8fafc;}
+  thead th{padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f1f5f9;}
+  thead th input[type=checkbox]{accent-color:#0f2744;}
+  tbody tr{border-bottom:1px solid #f8fafc;transition:background 0.12s;}
+  tbody tr:hover{background:#fafbff;}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:12px 16px;font-size:12px;color:#374151;vertical-align:middle;}
+  .td-check input{accent-color:#0f2744;}
+  .log-id{font-family:monospace;font-size:11px;color:#94a3b8;}
+  .device-ip{font-family:monospace;font-size:11px;color:#1e3a5f;font-weight:600;background:#eff6ff;padding:2px 7px;border-radius:5px;}
+  .device-name{font-size:11px;color:#64748b;margin-top:2px;}
+  .url-cell{font-family:monospace;font-size:11px;color:#0f172a;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .timestamp{font-size:11px;color:#64748b;}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600;}
+  .badge.blocked{background:#fef2f2;color:#dc2626;}
+  .badge.dropped{background:#fff7ed;color:#c2410c;}
+  .method-chip{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;}
+  .method-chip.lexical{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+  .method-chip.api{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+  .method-chip.custom{background:#fdf4ff;color:#9333ea;border:1px solid #e9d5ff;}
+  .reviewed-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .reviewed-dot.yes{background:#22c55e;}
+  .reviewed-dot.no{background:#f59e0b;}
+  .action-btns{display:flex;gap:6px;}
+  .act-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;border:none;cursor:pointer;}
+  .act-view{background:#eff6ff;color:#1d4ed8;}
+  .act-del{background:#fef2f2;color:#dc2626;}
+
+  /* PAGINATION */
+  .pagination{padding:14px 20px;border-top:1px solid #f8fafc;display:flex;align-items:center;justify-content:space-between;}
+  .page-info{font-size:12px;color:#94a3b8;}
+  .page-btns{display:flex;gap:4px;}
+  .pg-btn{width:30px;height:30px;border-radius:7px;border:1px solid #e2e8f0;background:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#374151;}
+  .pg-btn.active{background:#0f2744;color:white;border-color:#0f2744;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-shield">🛡</div>
+      <div>
+        <div class="sb-name">PhishGuard</div>
+        <div class="sb-sub">NIDS System</div>
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Main</div>
+    <div class="nav-item"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
+    <div class="nav-item active"><span class="nav-icon">📋</span><span class="nav-label">Threat Logs</span></div>
+    <div class="nav-item"><span class="nav-icon">🖥</span><span class="nav-label">Connected Devices</span></div>
+    <div class="sb-section">Admin</div>
+    <div class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">System Settings</span></div>
+    <div class="nav-item"><span class="nav-icon">🛡</span><span class="nav-label">Custom Rules</span></div>
+    <div class="sb-section">Account</div>
+    <div class="nav-item"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">👤</div>
+      <div>
+        <div class="sb-username">hafizuddin_admin</div>
+        <div class="sb-role">Superadmin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Threat Logs</h1>
+      <p>Complete history of all detected and blocked phishing attempts</p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-danger">🗑 Clear All Logs</button>
+      <button class="btn btn-primary">⬇ Export CSV</button>
+      <div class="page-label">Page 3 / 6</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SUMMARY STRIP -->
+    <div class="summary-strip">
+      <div class="sum-card red">
+        <span class="sum-icon">🚫</span>
+        <div><div class="sum-val">142</div><div class="sum-label">Total Threats Blocked</div></div>
+      </div>
+      <div class="sum-card blue">
+        <span class="sum-icon">🔍</span>
+        <div><div class="sum-val">89</div><div class="sum-label">Detected via PhishTank API</div></div>
+      </div>
+      <div class="sum-card amber">
+        <span class="sum-icon">📐</span>
+        <div><div class="sum-val">53</div><div class="sum-label">Detected via Lexical Analysis</div></div>
+      </div>
+      <div class="sum-card">
+        <span class="sum-icon">✅</span>
+        <div><div class="sum-val">128</div><div class="sum-label">Logs Reviewed by Admin</div></div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span style="color:#94a3b8;">🔍</span>
+        <input type="text" placeholder="Search by URL, IP address, or device name..."/>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Method:</span>
+        <select>
+          <option>All Methods</option>
+          <option>PhishTank API</option>
+          <option>Lexical Analysis</option>
+          <option>Custom Rule</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Action:</span>
+        <select>
+          <option>All Actions</option>
+          <option>Blocked</option>
+          <option>Dropped</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Date:</span>
+        <input type="date" value="2026-05-28"/>
+      </div>
+      <button class="btn btn-primary">Apply Filter</button>
+      <button class="btn btn-outline">Reset</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <div>
+          <div class="table-title">Threat Log Records</div>
+          <div class="table-count">Showing 6 of 142 records</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox"/></th>
+            <th>Log ID</th>
+            <th>Timestamp</th>
+            <th>Device</th>
+            <th>Phishing URL</th>
+            <th>Method</th>
+            <th>Action</th>
+            <th>Reviewed</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0142</span></td>
+            <td><span class="timestamp">28 May 2026<br/>09:15:43</span></td>
+            <td><div class="device-ip">192.168.1.10</div><div class="device-name">Smart TV</div></td>
+            <td><span class="url-cell">http://free-gift-claim.xyz/login</span></td>
+            <td><span class="method-chip api">PhishTank API</span></td>
+            <td><span class="badge blocked">🚫 Blocked</span></td>
+            <td><span class="reviewed-dot yes"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0141</span></td>
+            <td><span class="timestamp">28 May 2026<br/>08:52:17</span></td>
+            <td><div class="device-ip">192.168.1.14</div><div class="device-name">Smart Printer</div></td>
+            <td><span class="url-cell">http://mybank-secure.tk/verify</span></td>
+            <td><span class="method-chip api">PhishTank API</span></td>
+            <td><span class="badge blocked">🚫 Blocked</span></td>
+            <td><span class="reviewed-dot yes"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0140</span></td>
+            <td><span class="timestamp">28 May 2026<br/>08:31:05</span></td>
+            <td><div class="device-ip">192.168.1.11</div><div class="device-name">IP Camera</div></td>
+            <td><span class="url-cell">http://192.168.99.1/phish?id=443</span></td>
+            <td><span class="method-chip lexical">Lexical</span></td>
+            <td><span class="badge dropped">⬇ Dropped</span></td>
+            <td><span class="reviewed-dot no"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0139</span></td>
+            <td><span class="timestamp">28 May 2026<br/>07:44:29</span></td>
+            <td><div class="device-ip">192.168.1.13</div><div class="device-name">Smartphone</div></td>
+            <td><span class="url-cell">http://update-wallet-now.com/action</span></td>
+            <td><span class="method-chip custom">Custom Rule</span></td>
+            <td><span class="badge blocked">🚫 Blocked</span></td>
+            <td><span class="reviewed-dot yes"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0138</span></td>
+            <td><span class="timestamp">27 May 2026<br/>22:10:04</span></td>
+            <td><div class="device-ip">192.168.1.16</div><div class="device-name">Smart Light</div></td>
+            <td><span class="url-cell">http://win-iphone15-now.net/claim</span></td>
+            <td><span class="method-chip api">PhishTank API</span></td>
+            <td><span class="badge blocked">🚫 Blocked</span></td>
+            <td><span class="reviewed-dot no"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td class="td-check"><input type="checkbox"/></td>
+            <td><span class="log-id">#0137</span></td>
+            <td><span class="timestamp">27 May 2026<br/>20:33:51</span></td>
+            <td><div class="device-ip">192.168.1.12</div><div class="device-name">Laptop</div></td>
+            <td><span class="url-cell">http://secure-login-paypal.co/auth</span></td>
+            <td><span class="method-chip lexical">Lexical</span></td>
+            <td><span class="badge dropped">⬇ Dropped</span></td>
+            <td><span class="reviewed-dot yes"></span></td>
+            <td><div class="action-btns"><button class="act-btn act-view">View</button><button class="act-btn act-del">Delete</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <div class="page-info">Showing 1–6 of 142 records</div>
+        <div class="page-btns">
+          <button class="pg-btn">←</button>
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <span style="font-size:12px;color:#94a3b8;padding:0 4px;">...</span>
+          <button class="pg-btn">24</button>
+          <button class="pg-btn">→</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
